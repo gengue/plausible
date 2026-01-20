@@ -5,7 +5,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       start_period: 1m
@@ -55,38 +55,17 @@ services:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       # optional: https://github.com/plausible/community-edition/wiki/configuration#optional
       # registration: https://github.com/plausible/community-edition/wiki/configuration#registration
-      - TOTP_VAULT_KEY
-      - DISABLE_REGISTRATION
-      - ENABLE_EMAIL_VERIFICATION
+      - TOTP_VAULT_KEY=${TOTP_VAULT_KEY}
+      - DISABLE_REGISTRATION=${DISABLE_REGISTRATION:-false}
+      - ENABLE_EMAIL_VERIFICATION=${ENABLE_EMAIL_VERIFICATION:-false}
       # web: https://github.com/plausible/community-edition/wiki/configuration#web
-      - HTTP_PORT
-      - HTTPS_PORT
+      - HTTP_PORT=${HTTP_PORT:-8000}
+      - HTTPS_PORT=${HTTPS_PORT:-443}
       # databases: https://github.com/plausible/community-edition/wiki/configuration#database
-      - DATABASE_URL
-      - CLICKHOUSE_DATABASE_URL
-      # Google: https://github.com/plausible/community-edition/wiki/configuration#google
-      - GOOGLE_CLIENT_ID
-      - GOOGLE_CLIENT_SECRET
+      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@plausible_db:5432/plausible_db}
+      - CLICKHOUSE_DATABASE_URL=${CLICKHOUSE_DATABASE_URL:-http://plausible_events_db:8123/plausible_events_db}
       # geolocation: https://github.com/plausible/community-edition/wiki/configuration#ip-geolocation
-      - IP_GEOLOCATION_DB
-      - GEONAMES_SOURCE_FILE
-      - MAXMIND_LICENSE_KEY
-      - MAXMIND_EDITION
-      # email: https://github.com/plausible/community-edition/wiki/configuration#email
-      - MAILER_ADAPTER
-      - MAILER_EMAIL
-      - MAILER_NAME
-      - SMTP_HOST_ADDR
-      - SMTP_HOST_PORT
-      - SMTP_USER_NAME
-      - SMTP_USER_PWD
-      - SMTP_HOST_SSL_ENABLED
-      - POSTMARK_API_KEY
-      - MAILGUN_API_KEY
-      - MAILGUN_DOMAIN
-      - MAILGUN_BASE_URI
-      - MANDRILL_API_KEY
-      - SENDGRID_API_KEY
+      - IP_GEOLOCATION_DB=${IP_GEOLOCATION_DB:-/app/lib/plausible-0.0.1/priv/geodb/dbip-country.mmdb.gz}
 
 volumes:
   db-data:
